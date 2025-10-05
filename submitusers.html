@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Litescan - Submit Users/Servers</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="icon" type="image/png" href="https://i.imgur.com/FocTJT5.png">
+    <style>
+        :root {
+            --primary: #7289da;
+            --primary-dark: #5b6eae;
+            --dark: #1a1d21;
+            --darker: #0f1012;
+            --light: #f5f5f5;
+            --danger: #e74c3c;
+            --success: #2ecc71;
+            --text-light: #b9bbbe;
+            --text-lighter: #dcddde;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--darker);
+            color: var(--text-lighter);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Header Styles */
+        header {
+            background-color: rgba(26, 29, 33, 0.98);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+        }
+        
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--light);
+        }
+        
+        .logo-img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+        
+        .nav-links a {
+            color: var(--text-light);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+        
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+        
+        .mobile-menu {
+            display: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-light);
+        }
+        
+        /* Submit Section */
+        .submit-section {
+            padding: 5rem 0;
+            background-color: var(--dark);
+        }
+        
+        .section-title {
+            text-align: center;
+            margin-bottom: 3rem;
+            font-size: 2.5rem;
+            color: var(--text-lighter);
+        }
+        
+        .form-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: rgba(42, 45, 51, 0.5);
+            padding: 2rem;
+            border-radius: 8px;
+            border-left: 4px solid var(--primary);
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--text-lighter);
+            font-weight: 500;
+        }
+        
+        input[type="text"] {
+            width: 100%;
+            padding: 0.75rem;
+            background-color: var(--darker);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            color: var(--text-lighter);
+            font-size: 1rem;
+        }
+        
+        input[type="text"]:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 12px 30px;
+            background-color: var(--primary);
+            color: white;
+            border-radius: 4px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: background-color 0.3s;
+            border: none;
+            cursor: pointer;
+            width: 100%;
+        }
+        
+        .btn:hover {
+            background-color: var(--primary-dark);
+        }
+        
+        .success-message, .error-message {
+            margin-top: 1rem;
+            padding: 1rem;
+            border-radius: 4px;
+            text-align: center;
+            display: none;
+        }
+        
+        .success-message {
+            background-color: rgba(46, 204, 113, 0.2);
+            color: var(--success);
+        }
+        
+        .error-message {
+            background-color: rgba(231, 76, 60, 0.2);
+            color: var(--danger);
+        }
+        
+        /* Footer (copied from main) */
+        footer {
+            background-color: var(--dark);
+            padding: 3rem 0 1rem;
+            text-align: center;
+        }
+        
+        .footer-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2rem;
+        }
+        
+        .footer-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--light);
+        }
+        
+        .footer-logo-img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+        
+        .footer-links a {
+            color: var(--text-light);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .footer-links a:hover {
+            color: var(--primary);
+        }
+        
+        .copyright {
+            color: var(--text-light);
+            font-size: 0.9rem;
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            width: 100%;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+                flex-direction: column;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                width: 100%;
+                background-color: var(--dark);
+                padding: 1rem 0;
+                text-align: center;
+                gap: 1.5rem;
+            }
+            
+            .nav-links.active {
+                display: flex;
+            }
+            
+            .mobile-menu {
+                display: block;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <nav>
+                <div class="logo">
+                    <img src="https://i.imgur.com/FocTJT5.png" alt="Litescan Bot" class="logo-img">
+                    <span>Litescan</span>
+                </div>
+                <ul class="nav-links">
+                    <li><a href="/">Home</a></li>
+                    <li><a href="#features">Features</a></li>
+                    <li><a href="#how-it-works">How It Works</a></li>
+                    <li><a href="https://discord.com/oauth2/authorize?client_id=1373063366133940224&permissions=1101674884102&integration_type=0&scope=bot" class="btn" target="_blank">Invite Bot</a></li>
+                </ul>
+                <div class="mobile-menu">
+                    <i class="fas fa-bars"></i>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Submit User Section -->
+    <section class="submit-section">
+        <div class="container">
+            <h2 class="section-title">Submit User</h2>
+            <div class="form-container">
+                <form id="user-form">
+                    <div class="form-group">
+                        <label for="username">Username</label>
+                        <input type="text" id="username" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="userid">User ID</label>
+                        <input type="text" id="userid" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="proof">Proof of the Act (URL or description)</label>
+                        <input type="text" id="proof" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="servername-user">Server Name</label>
+                        <input type="text" id="servername-user" required>
+                    </div>
+                    <button type="submit" class="btn">Submit User</button>
+                    <div class="success-message" id="user-success">User submitted successfully!</div>
+                    <div class="error-message" id="user-error">Error submitting user. Please try again.</div>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Submit Server Section -->
+    <section class="submit-section" style="background-color: var(--darker);">
+        <div class="container">
+            <h2 class="section-title">Submit Server</h2>
+            <div class="form-container">
+                <form id="server-form">
+                    <div class="form-group">
+                        <label for="guildid">Server Guild ID</label>
+                        <input type="text" id="guildid" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="servername-server">Server Name</label>
+                        <input type="text" id="servername-server" required>
+                    </div>
+                    <button type="submit" class="btn">Submit Server</button>
+                    <div class="success-message" id="server-success">Server submitted successfully!</div>
+                    <div class="error-message" id="server-error">Error submitting server. Please try again.</div>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <img src="https://i.imgur.com/FocTJT5.png" alt="Litescan Bot" class="footer-logo-img">
+                    <span>Litescan</span>
+                </div>
+                <div class="footer-links">
+                    <a href="/">Home</a>
+                    <a href="#features">Features</a>
+                    <a href="#how-it-works">How It Works</a>
+                    <a href="https://discord.gg/Pkf5QNdJew" target="_blank">Support</a>
+                    <a href="#">Privacy Policy</a>
+                    <a href="#">Terms of Service</a>
+                </div>
+                <div class="copyright">
+                    <p>&copy; 2025 Litescan Bot. All rights reserved.</p>
+                    <p>This bot is not affiliated with Discord Inc.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile menu toggle
+        document.querySelector('.mobile-menu').addEventListener('click', function() {
+            document.querySelector('.nav-links').classList.toggle('active');
+        });
+        
+        // Close mobile menu when clicking on a link
+        document.querySelectorAll('.nav-links a').forEach(link => {
+            link.addEventListener('click', () => {
+                document.querySelector('.nav-links').classList.remove('active');
+            });
+        });
+
+        // Webhook URL
+        const webhookUrl = 'https://discord.com/api/webhooks/1398803145831743621/iVFYIkzr7uc7WYkZgDYEwulI-l17HJXfQEdBX3omrzdIU3JX3vDcf_ZGRlm_k_LiFTAw';
+
+        // Handle User Form Submit
+        document.getElementById('user-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const username = document.getElementById('username').value;
+            const userid = document.getElementById('userid').value;
+            const proof = document.getElementById('proof').value;
+            const servername = document.getElementById('servername-user').value;
+
+            const payload = {
+                embeds: [{
+                    title: 'New User Submission',
+                    color: 0x7289da,
+                    fields: [
+                        { name: 'Username', value: username, inline: true },
+                        { name: 'User ID', value: userid, inline: true },
+                        { name: 'Proof', value: proof },
+                        { name: 'Server Name', value: servername }
+                    ],
+                    timestamp: new Date().toISOString()
+                }]
+            };
+
+            try {
+                const response = await fetch(webhookUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                if (response.ok) {
+                    document.getElementById('user-success').style.display = 'block';
+                    document.getElementById('user-error').style.display = 'none';
+                    document.getElementById('user-form').reset();
+                } else {
+                    throw new Error('Failed to send');
+                }
+            } catch (error) {
+                document.getElementById('user-error').style.display = 'block';
+                document.getElementById('user-success').style.display = 'none';
+            }
+        });
+
+        // Handle Server Form Submit
+        document.getElementById('server-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const guildid = document.getElementById('guildid').value;
+            const servername = document.getElementById('servername-server').value;
+
+            const payload = {
+                embeds: [{
+                    title: 'New Server Submission',
+                    color: 0x7289da,
+                    fields: [
+                        { name: 'Guild ID', value: guildid, inline: true },
+                        { name: 'Server Name', value: servername, inline: true }
+                    ],
+                    timestamp: new Date().toISOString()
+                }]
+            };
+
+            try {
+                const response = await fetch(webhookUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                if (response.ok) {
+                    document.getElementById('server-success').style.display = 'block';
+                    document.getElementById('server-error').style.display = 'none';
+                    document.getElementById('server-form').reset();
+                } else {
+                    throw new Error('Failed to send');
+                }
+            } catch (error) {
+                document.getElementById('server-error').style.display = 'block';
+                document.getElementById('server-success').style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>
