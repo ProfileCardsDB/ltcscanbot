@@ -1,3 +1,4 @@
+<!-- Submit Users Page (sumbitusers.html) -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -384,17 +385,35 @@
             const proof = document.getElementById('proof').value;
             const servername = document.getElementById('servername-user').value;
 
+            // Calculate creation date from snowflake
+            let creationDate = 'Unknown';
+            try {
+                const timestamp = (BigInt(userid) >> 22n) + 1420070400000n;
+                creationDate = new Date(Number(timestamp)).toUTCString();
+            } catch {}
+
+            // Calculate default avatar index
+            const avatarIndex = Number((BigInt(userid) >> 22n) % 6n);
+            const defaultPfp = `https://cdn.discordapp.com/embed/avatars/${avatarIndex}.png`;
+
             const payload = {
                 embeds: [{
                     title: 'New User Submission',
                     color: 0x7289da,
+                    author: {
+                        name: `${username} (${userid})`,
+                        url: `https://discord.com/users/${userid}`,
+                        icon_url: defaultPfp
+                    },
                     fields: [
                         { name: 'Username', value: username, inline: true },
                         { name: 'User ID', value: userid, inline: true },
+                        { name: 'Creation Date', value: creationDate, inline: true },
                         { name: 'Proof', value: proof },
                         { name: 'Server Name', value: servername }
                     ],
-                    timestamp: new Date().toISOString()
+                    timestamp: new Date().toISOString(),
+                    thumbnail: { url: defaultPfp }
                 }]
             };
 
@@ -423,15 +442,52 @@
             const guildid = document.getElementById('guildid').value;
             const servername = document.getElementById('servername-server').value;
 
+            let memberCount = 'Unknown';
+            let invite = 'Unknown';
+            let iconHash = null;
+
+            try {
+                // Fetch guild preview
+                const previewResp = await fetch(`https://discord.com/api/guilds/${guildid}/preview`, {
+                    headers: { 'Accept': 'application/json' }
+                });
+                if (previewResp.ok) {
+                    const preview = await previewResp.json();
+                    memberCount = preview.approximate_member_count;
+                    if (preview.vanity_url_code) {
+                        invite = `https://discord.gg/${preview.vanity_url_code}`;
+                    }
+                    iconHash = preview.icon;
+                }
+
+                // Fetch widget if needed
+                const widgetResp = await fetch(`https://discord.com/api/guilds/${guildid}/widget.json`, {
+                    headers: { 'Accept': 'application/json' }
+                });
+                if (widgetResp.ok) {
+                    const widget = await widgetResp.json();
+                    if (widget.instant_invite && invite === 'Unknown') {
+                        invite = widget.instant_invite;
+                    }
+                }
+            } catch (error) {
+                console.error('Error fetching server info:', error);
+            }
+
+            const iconUrl = iconHash ? `https://cdn.discordapp.com/icons/${guildid}/${iconHash}.png?size=128` : null;
+
             const payload = {
                 embeds: [{
                     title: 'New Server Submission',
                     color: 0x7289da,
                     fields: [
                         { name: 'Guild ID', value: guildid, inline: true },
-                        { name: 'Server Name', value: servername, inline: true }
+                        { name: 'Server Name', value: servername, inline: true },
+                        { name: 'Member Count', value: memberCount.toString(), inline: true },
+                        { name: 'Invite', value: invite, inline: true }
                     ],
-                    timestamp: new Date().toISOString()
+                    timestamp: new Date().toISOString(),
+                    thumbnail: iconUrl ? { url: iconUrl } : undefined
                 }]
             };
 
